@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	<!-- 曾经吃过大亏的地方的路径的问题。然而并不知道原因是什么。
+		classpath:./../properties/db.properties
+		classpath:../properties/db.properties
+		现在两种都可以用。什么鬼?
+	 -->
+	<context:property-placeholder location="classpath:properties/db.properties" />
+	<bean id="pooledDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="${jdbc.driver}"></property>
+		<property name="jdbcUrl" value="${jdbc.url}"></property>
+		<property name="user" value="${jdbc.user}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+		<!-- 定义初始连接数 -->	
+		<property name="initialPoolSize" value="${jdbc.initialPoolSize}"></property>
+		<!-- 当连接池中 的连接耗尽是，c3p0一次同时获取的连接数。 -->	
+		<property name="acquireIncrement" value="${jdbc.acquireIncrement}"></property>
+		<!-- 定义连接池中保留的最大连接数 -->	
+		<property name="maxPoolSize" value="${jdbc.maxPoolSize}"></property>
+		<!-- 定义连接池中保留的最小连接数 -->	
+		<property name="minPoolSize" value="${jdbc.minPoolSize}"></property>
+		<!-- 定义最大空闲，多少秒内未使用，则连接池被丢弃 -->	
+		<property name="maxIdleTime" value="${jdbc.maxIdleTime}"></property>
+	</bean>
+
+</beans>

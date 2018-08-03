@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+	
+	<!-- 导入事物，控制数据源 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="pooledDataSource"></property>
+	</bean>
+	
+	<!-- 事物 设置-->
+	<aop:config>
+		<!-- 事物切入哪些方法 -->
+		<aop:pointcut expression="execution(* cn.qyl.ssmcrud.service..*(..))" id="txPoint"/>
+		<!-- 事物切入那些方法，如何切入 、控制 -->
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPoint"/>
+	</aop:config>
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+		<!-- 所有的方法都进行事物切入管理 控制-->
+			<tx:method name="*"/>
+		<!-- get开头的方法是获取，查询之类。可以不使用事物进行管理 -->
+			<tx:method name="get*" read-only="true"/>
+		</tx:attributes>
+	</tx:advice>
+
+</beans>

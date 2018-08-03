@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+<!-- 与mybatis的整合，引用了 spring-db.xml文件的中的pooledDataSource 
+		项目中引用了 mybatis框架的分页，逆向工程。所以 还是需要mybatis的配置文件	
+		否则可将全局文件中所有能配置的内容使用property配置在spring-mybatis-dao.xml文件中
+	--> 
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 指定mybatis的位置 名字不能乱起，The name of the property, following JavaBean naming conventions.-->
+		<property name="configLocation" value="classpath:/mybatis-config.xml"></property>
+		<!-- 引用数据源 -->
+		<property name="dataSource" ref ="pooledDataSource"></property>
+		<!-- 指定mybatis mapper文件的位置
+			原本ioc容器对mapper接口批量扫描是遵循一个规范的：将mapper.xml和mapper.java映射文件名字保持一直
+			，且在一个目录中，自动扫描出来的mapper的bean的id为mapper的类名（首字母小写）
+			这里疑似为了美观将mapper.xml文件设置在resources包下
+		 -->
+		<property name="mapperLocations" value="classpath*:mapper/*.xml"></property>
+	</bean>
+	<!-- 配置扫描器，将mybatis接口的实现，扫描加入到ioc容器中 -->
+	<!-- 配置一个mapper扫描器 不然mapper太多 自动扫描出mapper接口 自动创建代理对象 并且在spring中注册 -->
+	<bean  class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+	<!-- 扫描所有的dao接口的实现加载在ioc容器中 -->
+		<property name="basePackage" value="cn.qyl.ssmcrud.dao"></property>
+	</bean>
+
+</beans>
